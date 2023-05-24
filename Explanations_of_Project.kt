@@ -147,8 +147,23 @@ app.Run();         /The run method starts listening to  http requests
 
 
 
+THE PROJECT FILE
+    
+   The project file contains the information that the  dot net core platform uses to build the project  
+     and keep track of dependencies
+   There is no  need usually to edit the product file directly in most projects the most common change to the  file is to add dependencies 
 
 
+    
+    <Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
 
 
 
