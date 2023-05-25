@@ -1,8 +1,10 @@
 what is asp.net core
-
+Asp.net core is a cross-platform
 
 
 ASP.NET Core is an open-source, cross-platform web development framework developed by Microsoft.
+
+
 It is the successor to the original ASP.NET framework and offers several improvements and new features. ASP.NET Core is designed to build modern,
 cloud-based, and scalable web applications that can run on Windows, macOS, or Linux.
 
