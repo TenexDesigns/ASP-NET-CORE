@@ -225,12 +225,164 @@ useful when you want to provide configurable behavior to your middleware without
 
 
 
+Sure. The code you provided is an example of a class-based middleware that uses the Options pattern to configure middleware. 
+The middleware is responsible for writing the name and color of the fruit to the response if 
+the request path is equal to /fruit. Otherwise, the middleware will delegate to the next middleware in the pipeline.
+
+The FruitMiddleware class has two properties: _next and _options. The _next property is a delegate to the next middleware in the pipeline.
+The _options property is an instance of the FruitOptions class, which represents the configuration data for the middleware.
+
+The FruitMiddleware class has a single method, InvokeAsync. The InvokeAsync method is responsible for processing the request. 
+The method first checks if the request path is equal to /fruit. If it is, the method writes the name and color of the fruit to the response.
+Otherwise, the method delegates to the next middleware in the pipeline.
+
+The FruitMiddleware class is configured using the Options pattern. The FruitOptions class is registered with the dependency injection container.
+The FruitMiddleware class is then injected with an instance of the FruitOptions class.
+
+The following code shows how to configure the FruitMiddleware class using the Options pattern:
+
+C#
+using core;
+using Microsoft.Extensions.Options;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<FruitOptions>(options =>
+{
+    options.Name = "Watermelon";
+});
+
+var app = builder.Build();
+
+app.MapGet("/fruit", new FruitMiddleware(context =>
+{
+    // Do something with the context.
+}));
+
+app.MapGet("/", () => "Hello World!");
+
+app.Run();
+Use code with caution. Learn more
+In the code above, the FruitOptions class is configured with the name of the fruit.
+The FruitMiddleware class is then mapped to the /fruit route. The FruitMiddleware class is injected with a delegate to the next middleware in the pipeline.
+
+When a request is made to the /fruit route, the FruitMiddleware class will be invoked. 
+The FruitMiddleware class will check if the request path is equal to /fruit. If it is,
+the method will write the name and color of the fruit to the response. Otherwise, the method will delegate to the next middleware in the pipeline.
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+The classs based middlweware
+=-------------------------------1.
+using Microsoft.Extensions.Options;
+
+namespace core
+{
+    public class FruitMiddleware
+    {
+
+        private RequestDelegate _next;
+        private FruitOptions _options;
+
+
+        public FruitMiddleware(RequestDelegate next,IOptions<FruitOptions> options)
+        {
+            _next = next;
+            _options = options.Value;
+        }
+
+
+        public async Task InvokeAsync(HttpContext context)
+        {
+            if (context.Request.Path == "/fruit")
+            {
+
+                  await context.Response.WriteAsync($"{_options.Name},{_options.Color}");
+
+
+
+
+
+            }
+            else
+            {
+                await _next(context);
+            }
+            
+
+
+        }
+    }
+
+
+
+
+
+
+
+
+}
+
+
+The fruit options
+---------------------------------2.
+namespace core
+{
+    public class FruitOptions
+    {
+        public string Name { get; set; } = "apples and juices";
+        public string Color { get; set; } = "green";
+    }
+}
+
+
+
+The programs.cs fiel
+--------------------------------------3
+
+
+
+
+using core;
+using Microsoft.Extensions.Options;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<FruitOptions>(options =>
+
+{
+
+}
+
+
+);
+
+
+var app = builder.Build();
+
+
+
+
+app.UseMiddleware<FruitMiddleware>();
+
+
+
+
+app.MapGet("/", () => "Hello World!");
+
+app.Run();
 
 
 
