@@ -220,23 +220,80 @@ custom functionality in your web applications.
 
 
 
+SHORT CIRCUITING THE REQUEST PIPELINE
+*****************************************************************************************************************************************************
+
+
+omponents that generate complete  responses can choose not to call the next function so that the request isnt passed on 
+
+components  that dont pass on requests are said to s"hort-circuit the pipeline "
+
+
+
+e.g
+
+
+using core;
+
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+
+app.Use(
+    
+    async(context,next) =>
+
+{
+    {           / This short circuits the pipeline
+        
+    if (context.Request.Path == "/short")                              /Here if the reuwest url is short , this is goign to happend and that is going to be the end of itis short,
+        await context.Response.WriteAsync("Request short-circuited");  
+    }
+    else
+    {
+        await next();              /Otherwise the reuest is just going to continue down the request pipeline
+    }
+   
+
+}
+       );
+
+
+
+
+
+app.MapGet("/", () => "Hello World!");
+
+app.Run();
 
 
 
 
 
 
+In the provided code, short-circuiting the request pipeline means that when a specific condition is met, 
+the middleware immediately sends a response to the client without invoking the subsequent middleware components. 
+This allows you to bypass unnecessary processing and improve the efficiency of your application.
+
+
+
+Short-circuiting the request pipeline means that the pipeline execution is stopped at a certain point without processing 
+all the remaining middleware components. In your example,
+the pipeline is short-circuited when the request path matches "/short". This is achieved by not calling await next() 
+and directly writing a response to the client.
 
 
 
 
+In this example, the middleware checks if the request path is "/short". If it matches, the response is written directly, and the execution is stopped.
+If it doesn\t match, the await next() line is executed, allowing the remaining middleware components to be processed.
 
+Short-circuiting can be useful when you want to avoid unnecessary processing or when you want to act as a terminal middleware, 
+such as in the case of static file middleware, where the request can be processed and the response sent without further processing learn.microsoft.com.
 
-
-
-
-
-
+There are other ways to branch the middleware pipeline, such as using MapWhen and UseWhen.
+These methods branch the pipeline based on a predicate and can also short-circuit the pipeline 
+if they dont contain a terminal middleware learn.microsoft.com.
 
 
 
